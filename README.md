@@ -1,15 +1,15 @@
 <h1>Harmonize 2.0</h1>
 
 <h2>timeline</h2>
+ x database
+<br> x profile (basic)
+<br> x auth
+<br> o algorithm (everything)
+<br> o frontend (basic)
+<br> - friends (everything)
+<br> - frontend (remaining)
+<br> - profile (remaining)
 
-* database
-* profile (basic)
-* algorithm (everything)
-* frontend (basic)
-* friends (everything)
-* frontend (remaining)
-* profile (remaining)
-* auth
 
 
 <h2>services</h2>
