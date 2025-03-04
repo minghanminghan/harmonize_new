@@ -1,25 +1,29 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState } from "react";
+import axios from "axios";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+const backend = process.env.REACT_APP_BACKEND;
+
+// implement sse
+
+export default function App() {
+
+    const [friends, setFriends] = useState([]);
+    const [friend_requests, setFriendRequests] = useState([]);
+    const [algos, setAlgos] = useState([]);
+
+    axios.get('http://localhost:4000/user/', {
+        withCredentials: true
+    })
+    .then(res => res.data)
+    .then(res => console.log(res));
+
+
+
+    return (
+        <div>
+            {friends}
+            {friend_requests}
+            {algos}
+        </div>
+    );
 }
-
-export default App;

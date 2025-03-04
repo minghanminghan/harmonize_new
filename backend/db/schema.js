@@ -14,7 +14,8 @@ const UserSchema = new mongoose.Schema({
     }],
     highlight: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Song'
+        ref: 'Song',
+        default: null
     },
     algos: [{
         type: mongoose.Schema.Types.ObjectId,

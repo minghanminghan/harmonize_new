@@ -2,6 +2,7 @@ import { config } from "dotenv";
 config();
 import Express from "express";
 import mongoose from "mongoose";
+import cors from "cors";
 
 import { auth, client_id, client_secret, redirect_uri, scope } from "./auth.js";
 import { user } from "./user.js";
@@ -15,44 +16,62 @@ mongoose.connect(DB_URL).then(res => {
 
 
 const app = Express();
-const route_map = {
-    'favicon.ico': { authenticated: false },
-    '': { authenticated: true },
-    'auth': { authenticated: false },
-    'user': { authenticated: true}
-};
 
-// middleware
+
+app.use(cors({ credentials: true, origin: 'http://localhost:3000' }));
 app.use(Express.json());
 app.use(cookieParser());
 app.use((req, res, next) => {
+    console.log();
     console.log(req.path, req.method, req.params, req.query);
-    //console.log(req.cookies);
-    //console.log(req.body);
+    console.log(req.cookies);
+    console.log(req.body);
+    next();
+});
+app.use((req, res, next) => {
+    if (req.cookies !== undefined && req.cookies.username !== undefined) {
+        res.locals.username = req.cookies.username;
+    }
     next();
 });
 app.use(async (req, res, next) => {
-    const route = route_map[req.path.split('/', 3)[1]];
-    // console.log(route_map[req.path.split('/', 3)]);
-    // invalid route
-    if (route === undefined) {
-        return next('non-existent route');
+    if (req.path.split('/')[1] === 'auth') {
+        return next();
     }
-    // no authentication needed
-    else if (route['authenticated'] === false) {
-        next();
-    }
-    // no refresh token
+    // no refresh token, bad
     else if (req.cookies === undefined || req.cookies['Refresh'] === undefined) {
-        res.redirect('/auth/signup');
+        res.status(400);
+        return next('Unauthenticated (no refresh token)');
     }
     // yes refresh token
     else if (req.cookies['Refresh'] !== undefined && req.cookies['Authorization'] === undefined) {
-        res.redirect('/auth/refresh');
+        await fetch('https://accounts.spotify.com/api/token', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Authorization': 'Basic ' + (new Buffer.from(client_id + ':' + client_secret).toString('base64'))
+            },
+            body: `grant_type=refresh_token&refresh_token=${req.cookies['Refresh']}`
+        })
+        .then(res => res.json())
+        .then(data => {
+            res.locals.Authorization = 'Bearer ' + String(data.access_token);
+            res.cookie('Authorization', String(data.token_type) + ' ' + String(data.access_token), {
+                // httpOnly: true, // turn this on for prod
+                maxAge: 3600 * 1000,
+                sameSite: true
+            });
+            return next();
+        })
+        .catch(err => {
+            console.err(err.message);
+            res.status(500);
+            return next(err);
+        });
     }
     // refresh and access token both exist
     else {
-        res.locals.auth = req.cookies['Authorization'];
+        res.locals.Authorization = req.cookies['Authorization'];
         next();
     }
 });
