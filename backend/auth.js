@@ -129,6 +129,11 @@ auth.post('/callback', async (req, res) => {
 });
 
 
+// auth.post('/access', async (req, res) => {
+//     const user = await User.findOne({ username: req.body.username });
+//     res.send(user.authorization);
+// });
+
 // auth.get('/callback/:status', async (req, res) => {
 //     if (req.query.state === null) {
 //         res.status(404).send();

@@ -9,7 +9,7 @@
 <br> - friends (everything)
 <br> - frontend (remaining)
 <br> - profile (remaining)
-
+<br> - server-sent events
 
 
 <h2>services</h2>

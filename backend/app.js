@@ -24,8 +24,8 @@ app.use(cookieParser());
 app.use((req, res, next) => {
     console.log();
     console.log(req.path, req.method, req.params, req.query);
-    console.log(req.cookies);
-    console.log(req.body);
+    //console.log(req.cookies);
+    //console.log(req.body);
     next();
 });
 app.use((req, res, next) => {

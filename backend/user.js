@@ -1,5 +1,5 @@
 import Express from "express";
-import { User } from "./db/schema.js";
+import { Algo, User } from "./db/schema.js";
 
 
 const user = Express.Router();
@@ -7,9 +7,28 @@ const user = Express.Router();
 
 user.get('/', async (req, res) => {
     const user = await User.findOne({ username: res.locals.username }).lean();
-    const friends = await User.find({_id: {$in: user.friends }})
-    res.send(friends);
-    // TODO: aggregate!!
+    
+    const friends = await User.find({_id: {$in: user.friends }});
+
+    const friend_requests = await User.find({_id: {$in: user.friend_requests }});
+
+    const algos = await Algo.find({_id: {$in: user.algos }});
+
+    res.send({
+        friends: friends,
+        friend_requests: friend_requests,
+        algos: algos
+    });
+});
+
+user.get('/spotify', async (req, res) => {
+    const data = await fetch('https://api.spotify.com/v1/me', {
+        headers: {
+            Authorization: res.locals.Authorization
+        }
+    })
+    .then(res => res.json());
+    res.json(data);
 });
 
 

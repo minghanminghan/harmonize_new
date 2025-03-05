@@ -1,11 +1,8 @@
 import { useState } from "react";
 
 
-const backend = process.env.REACT_APP_BACKEND;
 const client_id = process.env.REACT_APP_SPOTIFY_CLIENT_ID;
-//const client_secret = process.env.SPOTIFY_client_secret;
-const redirect_uri = process.env.REACT_APP_BACKEND;
-const scope = 'user-read-private user-read-email';
+const scope = process.env.REACT_APP_SPOTIFY_SCOPE;
 
 
 export default function Login() {
