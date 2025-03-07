@@ -13,12 +13,8 @@ const track = {
     ]
 }
 
-// TODO: redo auth so web player can get access token, this is so scuffed
-const cookies = Object.fromEntries(document.cookie.split('; ').map(v => v.split('=')));
-const access = cookies['Authorization'].slice(9);
-
-
-export default function () {
+export default function Playback({ ...props }) {
+    console.log(props);
 
     const [player, setPlayer] = useState(undefined);
     const [is_paused, setPaused] = useState(false);
@@ -35,7 +31,7 @@ export default function () {
             //console.log('hi);
             const player = new window.Spotify.Player({
                 name: 'Web Playback SDK',
-                getOAuthToken: cb => { cb(access); },
+                getOAuthToken: cb => {cb(props.access_token)},
                 volume: 0.5
             });
     

@@ -1,46 +1,47 @@
-
-
+import { client_id, client_secret, redirect_uri, loginUrl, sp, setTokens } from "../utils/spotify.js"
 
 export default function Redirect()
 {
-    const backend = process.env.REACT_APP_BACKEND;
+    const code = String(window.location).split('=')[1];
+    const authorization = window.btoa(String(client_id + ':' + client_secret));
+    console.log(authorization);
+    fetch('https://accounts.spotify.com/api/token', {
+        method: 'POST',
+        body: `grant_type=authorization_code&code=${code}&redirect_uri=${redirect_uri}`,
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Authorization': `Basic ${authorization}`
+        }
+    })
+    .then(res => res.json())
+    .then(res => {
+        console.log(res);
+        sp.setToken(res.access_token);
 
-    // validate url
-    const params = new URLSearchParams(window.location.search);
-    console.log(window.location);
-    const code = params.get('code');
-    const state = params.get('state');
+        // set cookies
+        document.cookie = `Authorization=Bearer ${res.access_token}; max-age=3600; path=/`;
+        document.cookie = `Refresh=${res.refresh_token}`;
 
-    console.log('code:',code);
-    console.log('state:',state);
-
-    let status = false;
-
-    if (code !== null && state !== null) 
-    {
-        // send post request to backend and redirect to home
-        status = fetch(backend+'/auth/callback', {
+        // post refresh token to auth service
+        fetch(process.env.REACT_APP_AUTH_SERVICE, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                code: code,
-                state: state,
-                redirect_uri: 'http://localhost:3000/callback'
+                access: `Bearer ${res.access_token}`,
+                refresh: res.refresh_token
             })
-        })
-        .then((res) => res.json())
-        .then((res) => {
-            console.log(res);
-            Object.entries(res).forEach(([k, v]) => {
-                document.cookie = `${k}=${v}`;
-            });
-        })
-        .then(() => window.location = 'home')
-        .catch((error) => {
-            console.error(error.message)
-            window.location = 'error?msg=invalid credentials&redirect=/';
         });
-    }
+        
+        // redirect to home page
+        window.location.href = '/home';
+    })
+    .catch(err => {
+        console.log(err);
+        // redirect to error page
+    });
+    return (
+        <div>
+            callback
+        </div>
+    );
 }

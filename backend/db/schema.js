@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 
 const UserSchema = new mongoose.Schema({
     username: { type: String, required: true, unique: true },
+    token: { type: String, default: null }, // refresh token
     friends: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'

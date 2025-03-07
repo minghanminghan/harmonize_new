@@ -65,7 +65,7 @@ auth.get('/signup', (req, res) => {
     res.redirect('https://accounts.spotify.com/authorize?' + params.toString());
 });
 
-
+// this interacts with frontend
 auth.post('/callback', async (req, res) => {
     if (req.body === undefined) {
         res.status(400).send('invalid request');
@@ -129,63 +129,7 @@ auth.post('/callback', async (req, res) => {
 });
 
 
-// auth.post('/access', async (req, res) => {
-//     const user = await User.findOne({ username: req.body.username });
-//     res.send(user.authorization);
-// });
 
-// auth.get('/callback/:status', async (req, res) => {
-//     if (req.query.state === null) {
-//         res.status(404).send();
-//     } else if (req.query.error !== undefined ) {
-//         res.status(404).send(req.query.error);
-//     }
-//     else {
-//         await fetch('https://accounts.spotify.com/api/token', {
-//             method: 'POST',
-//             headers: {
-//                 'Content-Type': 'application/x-www-form-urlencoded',
-//                 'Authorization': 'Basic ' + (new Buffer.from(client_id + ':' + client_secret).toString('base64'))
-//             },
-//             body: `code=${req.query.code}&redirect_uri=${redirect_uri}/${req.params.status}&grant_type=authorization_code`,
-//             json: true
-//         })
-//         .then(res => res.json())
-//         .then(data => {
-//             console.log(data);
-//             res.locals.auth = 'Bearer ' + String(data.access_token);
-//             res.cookie('Refresh', String(data.refresh_token), {
-//                 // httpOnly: true
-//             });
-//             res.cookie('Authorization', String(data.token_type) + ' ' + String(data.access_token), {
-//                 // httpOnly: true, // turn this on for prod
-//                 maxAge: 3600 * 1000
-//             });
-//             return data.refresh_token;
-//         })
-//         .catch(err => {
-//             console.err(err.message);
-//             res.status(404).send(err.message);
-//             throw new Error(err.message);
-//         });
-//         console.log(res.locals.auth);
-//         if (req.params.status === 'signup') {
-//             const user_info = await fetch('https://api.spotify.com/v1/me', {
-//                 method: 'GET',
-//                 headers: { Authorization: res.locals.auth }
-//             })
-//             .then(res => res.json())
-//             .catch(err => {
-//                 console.err(err.message);
-//                 res.status(404).send(err.message);
-//                 throw new Error(err.message);
-//             });
-//             console.log(user_info);
-//             await User.create({ username: user_info.display_name });
-//         }
-//         res.redirect('/user/');
-//     }
-// });
 
 
 export {
