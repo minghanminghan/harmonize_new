@@ -16,7 +16,7 @@ export default function Redirect()
     .then(res => res.json())
     .then(res => {
         console.log(res);
-        sp.setToken(res.access_token);
+        sp.setAccessToken(res.access_token);
 
         // set cookies
         document.cookie = `Authorization=Bearer ${res.access_token}; max-age=3600; path=/`;

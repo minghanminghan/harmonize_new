@@ -1,4 +1,4 @@
-import SpotifyWebApi from "spotify-web-playback";
+import SpotifyWebApi from "spotify-web-api-node";
 
 
 export const client_id = process.env.REACT_APP_SPOTIFY_CLIENT_ID;

@@ -1,0 +1,38 @@
+.extend {
+
+.playlist.flex_row {
+    width: auto;
+    display: flex;
+    flex-direction: row;
+    outline: 1px solid black;
+    justify-content: center;
+
+    * {
+        margin-left: 100px;
+        margin-right: 100px;
+    }
+    
+    .flex_col {
+        flex-direction: column;
+    }
+}
+
+.track.wrapper{
+    cursor: pointer;
+    display:flex;
+    flex-direction: row;
+    outline: 1px solid black;
+    border-radius: 25px;
+    margin-top: 10px;
+
+    * {
+        width: 300px;
+        z-index: 0;
+    }
+}
+
+img {
+    width: 200px;
+    height: 200px;
+}
+}

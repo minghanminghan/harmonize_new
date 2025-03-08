@@ -5,7 +5,7 @@ import App from './App.js';
 import Login from './Login.js';
 import Redirect from './components/Redirect.js';
 import Error from './components/Error.js';
-import User from './User.js';
+import Extend from './Extend.js';
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -16,7 +16,7 @@ root.render(
       <Route path='/callback' element={<Redirect />} />
       <Route path="/home" element={<App />} />
       <Route path="/error" element={<Error />} />
-      <Route path="/users/:username" element={<User />} />
+      <Route path="/extend" element={<Extend />} />
     </Routes>
   </BrowserRouter>
 );

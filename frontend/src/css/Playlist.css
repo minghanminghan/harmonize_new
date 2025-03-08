@@ -1,0 +1,16 @@
+.playlist.wrapper {
+    width: 200px;
+    text-wrap-mode: wrap;
+
+    justify-items: center;
+
+    img {
+        width: 200px;
+        height: 200px;
+        cursor: pointer;
+    }
+}
+
+.playlist.outline {
+    outline: 1px solid black;
+}

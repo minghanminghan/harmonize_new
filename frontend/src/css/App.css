@@ -1,0 +1,7 @@
+.app.grid_auto_rows {
+    width: 100%;
+    display: grid;
+    grid-template-areas: 'a a a a a';
+    gap: 50px;
+    grid-auto-rows:max-content;
+}

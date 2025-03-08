@@ -1,25 +1,41 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import Playback from "./components/Playback.js";
 import { sp } from "./utils/spotify.js";
+import "./css/App.css";
+import Playback from "./components/Playback.js";
+import Playlist from "./Playlist.js";
 
 // implement sse
 
 export default function App() {
 
     const [token, setToken] = useState(null); // only refresh!
+    const [playlists, setPlaylists] = useState([]);
     
     useEffect(() => {
         async function getToken() {
             const res = await fetch(process.env.REACT_APP_AUTH_SERVICE+'/refresh').then(res => res.json());
             setToken(res.access_token);
+            // console.log(res.access_token);
+            sp.setAccessToken(res.access_token.split(' ')[1]);
+            sp.getUserPlaylists().then(res => {
+                console.log(res);
+                let tmp_playlists = []; // if >50 playlists, iteratively fetch next? or is limiting size ok
+                for (let item of res.body.items) {
+                    tmp_playlists.push(<Playlist key={item.id} props={item} />);
+                }
+                setPlaylists(tmp_playlists);
+            });
         }
         getToken();
     }, []);
 
+    
+
     return (
-        <div>
+        <div className='app grid_auto_rows'>
             {/* token ? <Playback access_token={token} /> : <></> */}
+            { token ? playlists : <></> }
         </div>
     );
 
