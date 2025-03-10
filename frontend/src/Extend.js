@@ -1,20 +1,24 @@
 import "./css/Extend.css";
 import { useLocation } from "react-router-dom";
-import { useEffect, useRef, useState } from "react";
-import { flushSync } from "react-dom";
-import { sp } from "./utils/spotify.js";
+import { useEffect, useRef, useState, useContext } from "react";
+import TokenContext from "./utils/TokenContext.js";
+import axios from "axios";
 
 export default function Extend() {
+    const { token } = useContext(TokenContext);
     const props = useLocation().state;
     const [tracks, setTracks] = useState([]);
     const [playing, setPlaying] = useState(null);
 
     useEffect(() => {
-        sp.getPlaylistTracks(props.id)
+        axios.get(`https://api.spotify.com/v1/playlists/${props.id}`, {
+            headers: { Authorization: token }
+        })
+        .then(res => res.data.tracks)
         .then(res => {
             console.log(res);
             let tmp_tracks = [];
-            for (let item of res.body.items) {
+            for (let item of res.items) {
                 tmp_tracks.push(<Track key={item.track.id} props={item.track} />);
             }
             setTracks(tmp_tracks);
@@ -38,6 +42,19 @@ export default function Extend() {
         setTracks(tmp_tracks);
     }
 
+    function handleClick(e) { // send ids to rec service
+        e.preventDefault();
+
+        fetch(process.env.REACT_APP_REC_SERVICE+'/rec', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ ids: tracks.map(v => v.key) })
+        })
+        .catch(err => console.log(err))
+        .then(res => res.json())
+        .then(res => console.log(res));
+    }
+
     return (
         <div className='extend'>
             <div className='playlist flex_row'>
@@ -49,7 +66,7 @@ export default function Extend() {
                     <p>length: {props.tracks.total}</p>
                     <a href={props.external_urls.spotify} target='_blank'>link</a>
                 </div>
-                <button>Extend</button>
+                <button onClick={handleClick}>Extend</button>
             </div>
             <div onDrop={handleDrop} onDragOver={(e) => {e.preventDefault()}}>
                 { tracks }

@@ -6,7 +6,7 @@ const app = Express();
 app.use(cors());
 app.use(Express.json());
 app.use((req, res, next) => {
-    console.log(req.method, req.path, req.body);
+    console.log(Date.now(), req.method, req.path, req.body);
     next();
 });
 
@@ -19,9 +19,9 @@ app.get('/', (req, res) => {
 let refresh, access, expiry;
 
 
-app.get('/refresh', async (req, res) => {
-    if (refresh === undefined) {
-        res.status(404).send();
+app.get('/access', async (req, res) => {
+    if (refresh === undefined || 'undefined' in req.body) {
+        res.status(400).send();
         return;
     }
     else if (Date.now() > expiry) { // check if access token is valid
@@ -48,7 +48,6 @@ app.post('/', (req, res) => { // { refresh: 'Bearer ...', access: str } <-- conv
     access = req.body.access;
     expiry = Date.now() + 3600*1000; // 1 hour from receiving token
 });
-
 
 
 const PORT = 4001;
