@@ -1,11 +1,11 @@
 <h1>Harmonize 2.0</h1>
 
 TODO:
-1. finalize interface design
-2. build out simple recommendation system (spotify metrics cosine distance)
-3. implement interface (use sdk for playback, spotify-web-api-node for state management)
-4. refine db service
-5. improve recommendation service (alltomp3, spotDL)
+x finalize interface design
+x build out simple recommendation system (spotify metrics cosine distance)
+x implement interface (use sdk for playback, spotify-web-api-node for state management)
+x refine db service
+o improve recommendation service (spotDL)
 
 
 <h2>timeline</h2>
